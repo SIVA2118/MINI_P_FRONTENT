@@ -1,0 +1,142 @@
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Ionicons } from '@expo/vector-icons';
+
+// Screens
+import LoginScreen from './screens/LoginScreen';
+import HomeScreen from './screens/HomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import ComplaintScreen from './screens/ComplaintScreen';
+import ComplaintsListScreen from './screens/ComplaintsListScreen';
+import DepartmentScreen from './screens/DepartmentScreen';
+import ProgrammeScreen from './screens/ProgrammeScreen';
+import BlockScreen from './screens/BlockScreen';
+import RoomNumberScreen from './screens/RoomNumberScreen';
+import RoleScreen from './screens/RoleScreen';
+import UserScreen from './screens/UserScreen';
+import DashboardScreen from './screens/DashboardScreen';
+import ReportsScreen from './screens/ReportsScreen'; // ✅ added reports
+
+const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+// User Drawer
+function UserDrawer() {
+  return (
+    <Drawer.Navigator
+      initialRouteName="Profile"
+      screenOptions={{
+        headerStyle: { backgroundColor: '#2563EB' },
+        headerTintColor: '#fff',
+      }}
+    >
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          drawerIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />,
+        }}
+      />
+      <Drawer.Screen
+        name="Raise Complaint"
+        component={ComplaintScreen}
+        options={{
+          drawerIcon: ({ color, size }) => <Ionicons name="create" size={size} color={color} />,
+        }}
+      />
+      <Drawer.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="My Complaints"
+        component={ComplaintsListScreen}
+        options={{
+          drawerIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} />,
+        }}
+      />
+    </Drawer.Navigator>
+  );
+}
+
+// Admin Drawer (SuperAdmin)
+function AdminDrawer() {
+  return (
+    <Drawer.Navigator
+      initialRouteName="Profile"
+      screenOptions={{ headerStyle: { backgroundColor: '#2563EB' }, headerTintColor: '#fff' }}
+    >
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Complaints List"
+        component={ComplaintsListScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Raise Complaint"
+        component={ComplaintScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="create" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Reports"
+        component={ReportsScreen} // ✅ added Reports
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="document-text" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Departments"
+        component={DepartmentScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="business" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Programmes"
+        component={ProgrammeScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="school" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Blocks"
+        component={BlockScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="cube" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Rooms"
+        component={RoomNumberScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Roles"
+        component={RoleScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="shield" size={size} color={color} /> }}
+      />
+      <Drawer.Screen
+        name="Users"
+        component={UserScreen}
+        options={{ drawerIcon: ({ color, size }) => <Ionicons name="people" size={size} color={color} /> }}
+      />
+    </Drawer.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
+        <Stack.Screen name="UserArea" component={UserDrawer} options={{ headerShown: false }} />
+        <Stack.Screen name="AdminArea" component={AdminDrawer} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
