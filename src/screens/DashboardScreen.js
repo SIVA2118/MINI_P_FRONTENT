@@ -55,7 +55,7 @@ export default function DashboardScreen() {
   const roleMessage =
     role === 'SuperAdmin'
       ? 'Showing all complaints'
-      : role === 'User'
+      : role === 'user'
       ? 'Showing only your complaints'
       : 'Showing complaints assigned to you';
 

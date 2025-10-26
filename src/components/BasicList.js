@@ -1,4 +1,3 @@
-// components/BasicList.js
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -10,7 +9,11 @@ import {
   Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { listMaster, createMaster, deleteMaster } from "../services/masterService";
+import {
+  listMaster,
+  createMaster,
+  deleteMaster,
+} from "../services/masterService";
 
 export default function BasicList({
   master,
@@ -22,10 +25,12 @@ export default function BasicList({
   const [loading, setLoading] = useState(false);
   const [extraFieldsState, setExtraFieldsState] = useState(extraFields);
 
+  // 🔹 Update any input field
   function updateField(field, value) {
     setFormValues((prev) => ({ ...prev, [field]: value }));
   }
 
+  // 🔹 Load all master data
   async function load() {
     setLoading(true);
     try {
@@ -38,6 +43,7 @@ export default function BasicList({
     }
   }
 
+  // 🔹 Load dropdown/picker options for extra fields
   async function loadExtraFieldOptions() {
     const updatedExtraFields = await Promise.all(
       extraFields.map(async (field) => {
@@ -74,15 +80,15 @@ export default function BasicList({
 
     setExtraFieldsState(updatedExtraFields);
 
-    // Initialize form values for extra fields
+    // Initialize empty form values for all fields
     setFormValues((prev) => ({
       ...prev,
       ...Object.fromEntries(updatedExtraFields.map((f) => [f.name, ""])),
     }));
   }
 
+  // 🔹 Add new record
   async function add() {
-    // Stronger validation: check empty string OR missing values
     const emptyRequired = [titleField, ...extraFieldsState.map((f) => f.name)].find(
       (field) => !formValues[field] || formValues[field] === ""
     );
@@ -92,7 +98,7 @@ export default function BasicList({
       return;
     }
 
-    console.log("👉 Saving payload:", formValues); // 👀 Debug
+    console.log("📦 Submitting data:", formValues);
 
     try {
       await createMaster(master, formValues);
@@ -107,6 +113,7 @@ export default function BasicList({
     }
   }
 
+  // 🔹 Delete record
   async function remove(id) {
     try {
       await deleteMaster(master, id);
@@ -121,10 +128,11 @@ export default function BasicList({
     loadExtraFieldOptions();
   }, []);
 
+  // 🔹 UI Rendering
   return (
     <View style={styles.container}>
       <View style={styles.column}>
-        {/* Title Field */}
+        {/* 🔸 Title Field */}
         <TextInput
           placeholder={`New ${master} ${titleField}`}
           value={formValues[titleField]}
@@ -132,17 +140,14 @@ export default function BasicList({
           style={styles.input}
         />
 
-        {/* Extra Fields */}
+        {/* 🔸 Extra Fields (TextInput or Picker) */}
         {extraFieldsState.map((field) => {
           if (field.type === "picker") {
             return (
               <Picker
                 key={field.name}
                 selectedValue={formValues[field.name] || ""}
-                onValueChange={(value) => {
-                  console.log(`🔄 Updating ${field.name} →`, value);
-                  updateField(field.name, value);
-                }}
+                onValueChange={(value) => updateField(field.name, value)}
                 style={styles.picker}
               >
                 <Picker.Item
@@ -159,6 +164,7 @@ export default function BasicList({
               </Picker>
             );
           }
+
           return (
             <TextInput
               key={field.name}
@@ -173,7 +179,7 @@ export default function BasicList({
         <Button title="Add" onPress={add} disabled={loading} />
       </View>
 
-      {/* List */}
+      {/* 🔸 List Display */}
       <FlatList
         data={items}
         keyExtractor={(item) => item._id || item.id || item[titleField]}
@@ -196,7 +202,7 @@ export default function BasicList({
                       {val.name ||
                         val.departmentName ||
                         val.programmeName ||
-                        val.blockName ||
+                        val.roleName ||
                         val.title}
                     </Text>
                   );
@@ -215,7 +221,11 @@ export default function BasicList({
             </View>
 
             {/* Delete button */}
-            <Button title="Delete" onPress={() => remove(item._id || item.id)} />
+            <Button
+              title="Delete"
+              color="red"
+              onPress={() => remove(item._id || item.id)}
+            />
           </View>
         )}
         ListEmptyComponent={
@@ -227,9 +237,15 @@ export default function BasicList({
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, flex: 1, gap: 12, backgroundColor: "#fff" },
-  column: { gap: 8 },
-  input: { borderWidth: 1, borderColor: "#ddd", borderRadius: 8, padding: 10 },
+  container: { padding: 16, flex: 1, backgroundColor: "#fff" },
+  column: { gap: 10 },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 8,
+  },
   picker: {
     borderWidth: 1,
     borderColor: "#ddd",
@@ -245,6 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "#f9f9f9",
   },
   itemTitle: {
     fontSize: 16,
